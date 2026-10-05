@@ -1,1119 +1,1424 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DONIX Fast Food - Menu & WebApp</title>
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DONIX FAST FOOD - Onlayn Buyurtma</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            donixDark: '#0D0D0E',
-            donixCard: '#16181F',
-            donixBorder: '#27272A',
-            donixYellow: '#FACC15',
-            donixRed: '#EF4444',
-            donixOrange: '#F97316'
-          }
-        }
-      }
-    }
-  </script>
-
   <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #0D0D0E;
-      color: #F3F4F6;
+    :root {
+      --bg-color: #0d0d0f;
+      --card-bg: #16161a;
+      --card-border: #26262e;
+      --text-main: #ffffff;
+      --text-muted: #9e9ea7;
+      --primary: #ff4500;
+      --primary-orange: #ff6b00;
+      --accent-yellow: #ffaa00;
+      --danger: #ff3344;
+      --success: #00e676;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-orange: 0 4px 20px rgba(255, 69, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding-bottom: 90px;
       overflow-x: hidden;
     }
-    .glass-card {
-      background: rgba(22, 24, 31, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* HEADER & BRANDING */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 13, 15, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .glass-nav {
-      background: rgba(13, 13, 14, 0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
     }
-    .donix-gradient-btn {
-      background: linear-gradient(135deg, #FACC15 0%, #F97316 50%, #EF4444 100%);
-      color: #000000;
+
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      background: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ff4500;
+      box-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
     }
-    .donix-glow {
-      box-shadow: 0 0 20px rgba(250, 204, 21, 0.25);
+
+    .logo-text-wrap {
+      display: flex;
+      align-items: center;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 1px;
     }
-    .donix-red-glow {
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+
+    .logo-d { color: #ffaa00; }
+    .logo-flame { color: #ff4500; margin: 0 1px; }
+    .logo-nix { color: #ffaa00; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+
+    .admin-badge-btn {
+      display: none; /* Shows only if authorized */
+      background: linear-gradient(135deg, #ff4500, #ffaa00);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-orange);
     }
-    .no-scrollbar {
-      -ms-overflow-style: none;
+
+    /* SEARCH BAR */
+    .search-container {
+      padding: 12px 16px 4px 16px;
+    }
+
+    .search-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      gap: 10px;
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      width: 100%;
+      outline: none;
+    }
+
+    .search-box i {
+      color: var(--text-muted);
+    }
+
+    /* SLIDER / BANNER CAROUSEL */
+    .slider-section {
+      padding: 14px 16px;
+    }
+
+    .banner-wrapper {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      height: 160px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+    }
+
+    .banner-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+
+    .banner-slide.active {
+      opacity: 1;
+    }
+
+    .banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.1));
+    }
+
+    .banner-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .banner-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    .banner-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .banner-sub {
+      font-size: 12px;
+      color: var(--accent-yellow);
+      margin-top: 2px;
+    }
+
+    /* CATEGORIES BAR */
+    .categories-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 16px 12px 16px;
       scrollbar-width: none;
     }
+
+    .categories-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-orange));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(255, 69, 0, 0.3);
+    }
+
+    /* PRODUCTS GRID */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 16px;
+    }
+
     .product-card {
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
     }
-    .product-card:active {
-      transform: scale(0.96);
+
+    .product-img-wrap {
+      width: 100%;
+      height: 110px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 10px;
+      background: #000;
     }
-    .active-category {
-      background: #FACC15;
-      color: #000000;
+
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .product-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      height: 28px;
+    }
+
+    .product-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .product-price {
       font-weight: 800;
-      box-shadow: 0 4px 15px rgba(250, 204, 21, 0.3);
+      font-size: 13px;
+      color: var(--accent-yellow);
     }
-    .modal-animate {
-      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+    .add-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-orange));
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(255, 69, 0, 0.4);
     }
-    @keyframes slideUp {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+
+    /* BOTTOM CART BAR */
+    .cart-bar-wrapper {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 90;
+
     }
-    .banner-slide {
-      transition: transform 0.5s ease-in-out;
+
+    .cart-bar {
+      background: linear-gradient(135deg, #ff4500, #ff8c00);
+      border-radius: var(--radius-lg);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      box-shadow: 0 8px 25px rgba(255, 69, 0, 0.5);
+      cursor: pointer;
     }
-    @keyframes pulseGlow {
-      0%, 100% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.08); opacity: 1; }
+
+    .cart-bar-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .pulse-animation {
-      animation: pulseGlow 2s infinite ease-in-out;
+
+    .cart-count-badge {
+      background: #000;
+      color: var(--accent-yellow);
+      font-weight: 800;
+      font-size: 12px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cart-bar-total {
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    /* MODAL & DRAWER STYLES */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-drawer {
+      background: var(--card-bg);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 20px;
+      border-top: 2px solid var(--primary);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.active .modal-drawer {
+      transform: translateY(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .drawer-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .close-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* CART ITEMS LIST */
+    .cart-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+    }
+
+    .cart-item-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .cart-item-price {
+      font-size: 12px;
+      color: var(--accent-yellow);
+    }
+
+    .cart-qty-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-bg);
+      padding: 4px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+    }
+
+    .cart-qty-btn {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: bold;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    /* ORDER FORM */
+    .order-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .form-control {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      outline: none;
+      font-size: 14px;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    .order-type-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .type-btn {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 10px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .type-btn.active {
+      background: rgba(255, 69, 0, 0.2);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn-submit-order {
+      background: linear-gradient(135deg, #ff4500, #ff8c00);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: var(--shadow-orange);
+    }
+
+    /* SUCCESS MODAL IN BRAND STYLE */
+    .success-modal {
+      text-align: center;
+      padding: 24px 12px;
+    }
+
+    .success-icon-wrap {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #ff4500, #ffaa00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+      box-shadow: 0 0 25px rgba(255, 69, 0, 0.6);
+    }
+
+    .success-icon-wrap i {
+      font-size: 36px;
+      color: #fff;
+    }
+
+    .success-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .success-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    /* FULLSCREEN ADMIN MODAL */
+    .admin-modal {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-color);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .admin-modal.active {
+      display: flex;
+    }
+
+    .admin-nav-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      margin: 16px 0;
+      padding-bottom: 8px;
+    }
+
+    .admin-tab-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .admin-tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .admin-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .admin-table th, .admin-table td {
+      border: 1px solid var(--card-border);
+      padding: 8px;
+      text-align: left;
+    }
+
+    .qr-preview-box {
+      background: #fff;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      display: inline-block;
+      margin-top: 12px;
+    }
+
+    .qr-preview-box img {
+      width: 180px;
+      height: 180px;
     }
   </style>
 </head>
-<body class="pb-28">
+<body>
 
-  <!-- HEADER SECTION -->
-  <header class="sticky top-0 z-40 glass-nav px-4 py-3">
-    <div class="flex items-center justify-between">
-      <!-- DONIX Logo SVG (Flame + Doner Skewer inside D ONIX) -->
-      <div class="flex items-center space-x-2">
-        <div class="flex items-center cursor-pointer" onclick="resetView()">
-          <svg class="h-9 w-auto" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Letter D -->
-            <path d="M10 15 H35 C55 15 65 25 65 40 C65 55 55 65 35 65 H10 V15 Z" fill="#FACC15"/>
-            <path d="M22 26 H33 C45 26 52 31 52 40 C52 49 45 54 33 54 H22 V26 Z" fill="#0D0D0E"/>
-            
-            <!-- Doner Kebab with Flame (Replaces Letter O) -->
-            <g transform="translate(75, 10)">
-              <!-- Flame on top -->
-              <path d="M20 2 C22 10 28 12 25 18 C23 22 17 22 15 18 C13 14 18 6 20 2 Z" fill="#EF4444"/>
-              <path d="M20 7 C21 11 25 13 23 17 C22 19 18 19 17 17 C16 14 19 9 20 7 Z" fill="#FACC15"/>
-              <!-- Skewer Stick -->
-              <rect x="18.5" y="15" width="3" height="52" rx="1.5" fill="#E5E7EB"/>
-              <!-- Doner Meat Layers -->
-              <path d="M10 24 L30 24 L27 32 L13 32 Z" fill="#F97316"/>
-              <path d="M8 32 L32 32 L29 42 L11 42 Z" fill="#EF4444"/>
-              <path d="M11 42 L29 42 L26 52 L14 52 Z" fill="#F97316"/>
-              <path d="M14 52 L26 52 L22 60 L18 60 Z" fill="#EF4444"/>
-            </g>
-
-            <!-- Letters N I X -->
-            <text x="120" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="48" fill="#FACC15" letter-spacing="2">NIX</text>
-          </svg>
-        </div>
+  <!-- HEADER -->
+  <header>
+    <a href="#" class="brand-logo">
+      <div class="logo-badge">
+        <!-- SVG Brand Flame Kebap -->
+        <svg width="24" height="28" viewBox="0 0 24 28" fill="none">
+          <path d="M12 0C12 0 15 4 15 7C15 9.5 13.5 11 12 11C10.5 11 9 9.5 9 7C9 4 12 0 12 0Z" fill="#FF4500"/>
+          <path d="M6 9C6 7.5 7 6 7 6C7 6 8.5 7.5 8.5 9.5C8.5 11 7.5 12 6 12C4.5 12 3.5 10.5 3.5 9.5C3.5 8.5 6 9 6 9Z" fill="#FFAA00"/>
+          <rect x="5" y="13" width="14" height="3" rx="1.5" fill="#FF4500"/>
+          <rect x="6" y="17" width="12" height="3" rx="1.5" fill="#FF8C00"/>
+          <rect x="7" y="21" width="10" height="3" rx="1.5" fill="#FFAA00"/>
+          <line x1="12" y1="11" x2="12" y2="28" stroke="#FFAA00" stroke-width="2"/>
+        </svg>
       </div>
-
-      <div class="flex items-center space-x-2">
-        <!-- Table indicator badge (shows if ?table=N in URL) -->
-        <div id="tableBadgeHeader" class="hidden bg-red-950/80 border border-red-500/50 text-red-400 text-xs font-extrabold px-3 py-1 rounded-full flex items-center space-x-1">
-          <i class="fa-solid fa-chair text-donixYellow"></i>
-          <span id="headerTableNum">Stol #--</span>
-        </div>
-
-        <!-- ADMIN BUTTON -->
-        <button id="adminBtn" onclick="openAdminModal()" class="bg-gray-900 border border-donixYellow/40 text-donixYellow px-3 py-1.5 rounded-xl text-xs font-extrabold hover:bg-donixYellow hover:text-black transition flex items-center space-x-1.5 shadow-md">
-          <i class="fa-solid fa-user-shield text-xs"></i>
-          <span>Admin</span>
-        </button>
+      <div class="logo-text-wrap">
+        <span class="logo-d">D</span>
+        <span class="logo-flame">🔥</span>
+        <span class="logo-nix">NIX</span>
       </div>
-    </div>
+    </a>
 
-    <!-- SEARCH & CATEGORY BAR -->
-    <div class="mt-3 relative">
-      <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-      <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Taom va ichimliklarni izlash..." class="w-full bg-gray-900/90 border border-donixBorder rounded-2xl pl-10 pr-4 py-2.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-donixYellow transition">
-    </div>
-
-    <!-- CATEGORIES -->
-    <div class="flex space-x-2 mt-3 overflow-x-auto no-scrollbar py-1" id="categoriesContainer">
-      <!-- Injected via JavaScript -->
+    <div class="header-actions">
+      <button class="admin-badge-btn" id="adminPanelBtn" onclick="openAdminPanel()">
+        <i class="fa-solid fa-user-shield"></i> Admin
+      </button>
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
-  <main class="px-4 mt-3">
-
-    <!-- PROMOTIONS DYNAMIC SLIDER -->
-    <div class="relative overflow-hidden rounded-2xl mb-4 border border-donixBorder glass-card shadow-xl">
-      <div id="bannerSlider" class="flex banner-slide">
-        <!-- Injected via JavaScript -->
-      </div>
-
-      <!-- Slider Dots -->
-      <div class="absolute bottom-2 left-0 right-0 flex justify-center space-x-1.5 z-20" id="sliderDots">
-        <!-- Injected via JavaScript -->
-      </div>
+  <!-- SEARCH BAR -->
+  <div class="search-container">
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="searchInput" placeholder="Taom yoki ichimlik qidirish..." oninput="handleSearch()" />
     </div>
+  </div>
 
-    <!-- PRODUCT LIST HEADER -->
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-sm font-black text-gray-200 uppercase tracking-wider flex items-center space-x-2">
-        <span id="currentCategoryTitle" class="text-donixYellow">Barcha menyu</span>
-        <span id="productCountBadge" class="text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full font-bold">0</span>
-      </h2>
+  <!-- PROMO SLIDER -->
+  <section class="slider-section">
+    <div class="banner-wrapper" id="bannerCarousel">
+      <!-- Banners loaded dynamically -->
     </div>
+  </section>
 
-    <!-- PRODUCTS GRID -->
-    <div class="grid grid-cols-2 gap-3" id="productsGrid">
-      <!-- Products Injected via JS -->
-    </div>
+  <!-- CATEGORIES -->
+  <div class="categories-bar" id="categoriesBar">
+    <!-- Loaded dynamically -->
+  </div>
+
+  <!-- PRODUCTS GRID -->
+  <main class="products-grid" id="productsGrid">
+    <!-- Loaded dynamically -->
   </main>
 
-  <!-- FLOATING CART BAR -->
-  <div id="floatingCart" class="fixed bottom-4 left-4 right-4 z-40 hidden transition-all duration-300">
-    <button onclick="openCartModal()" class="w-full donix-gradient-btn donix-glow font-black py-3.5 px-5 rounded-2xl flex items-center justify-between shadow-2xl active:scale-98 transition transform">
-      <div class="flex items-center space-x-3">
-        <div class="bg-black/30 px-2.5 py-1 rounded-xl text-sm font-extrabold flex items-center space-x-1 text-black">
-          <i class="fa-solid fa-basket-shopping text-xs"></i>
-          <span id="cartTotalCount">0</span>
-        </div>
-        <span class="text-sm font-extrabold tracking-wide text-black">Savatcha</span>
+  <!-- BOTTOM CART BAR -->
+  <div class="cart-bar-wrapper" id="cartBarWrapper" style="display: none;">
+    <div class="cart-bar" onclick="openCartModal()">
+      <div class="cart-bar-info">
+        <div class="cart-count-badge" id="cartCount">0</div>
+        <div>Savatni ko'rish</div>
       </div>
-      <div class="text-right flex items-center text-black">
-        <span id="cartTotalPrice" class="text-base font-black">0 so'm</span>
-        <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
-      </div>
-    </button>
+      <div class="cart-bar-total" id="cartTotal">0 so'm</div>
+    </div>
   </div>
 
-  <!-- CART MODAL -->
-  <div id="cartModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex flex-col justify-end">
-    <div class="glass-card w-full max-h-[90vh] rounded-t-3xl p-5 flex flex-col modal-animate border-t border-donixYellow/40">
-      
-      <div class="flex items-center justify-between pb-3 border-b border-gray-800">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-bag-shopping text-donixYellow text-xl"></i>
-          <h3 class="text-lg font-black text-white">Sizning Buyurtmangiz</h3>
-        </div>
-        <button onclick="closeCartModal()" class="w-8 h-8 rounded-full bg-gray-800 text-gray-400 flex items-center justify-center hover:bg-gray-700">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+  <!-- CART & CHECKOUT MODAL -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title">Sizning Buyurtmangiz</div>
+        <button class="close-btn" onclick="closeCartModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <!-- Cart Items List -->
-      <div class="overflow-y-auto my-3 pr-1 divide-y divide-gray-800 max-h-[38vh]" id="cartItemsList">
-        <!-- Injected via JS -->
+      <div class="cart-items-list" id="cartItemsList">
+        <!-- Cart Items -->
       </div>
 
-      <!-- Order Details Form -->
-      <div class="space-y-3 pt-2">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 mb-1">Buyurtma turi</label>
-            <select id="orderType" onchange="toggleTableInput()" class="w-full bg-gray-900 border border-gray-700 text-xs text-white rounded-xl px-3 py-2.5 focus:outline-none focus:border-donixYellow">
-              <option value="dine_in">Joyida (Stolda)</option>
-              <option value="takeaway">Olib ketish</option>
-              <option value="delivery">Dostavka (Yetkazish)</option>
-            </select>
-          </div>
-          
-          <div id="tableNumberContainer">
-            <label class="block text-xs font-semibold text-gray-400 mb-1">Stol raqami *</label>
-            <input type="number" id="tableNumber" placeholder="Masalan: 5" class="w-full bg-gray-900 border border-gray-700 text-xs text-white font-extrabold text-donixYellow rounded-xl px-3 py-2.5 focus:outline-none focus:border-donixYellow">
+      <div class="order-form">
+        <div class="form-group">
+          <label>Buyurtma turi:</label>
+          <div class="order-type-selector">
+            <button class="type-btn active" id="typeDineIn" onclick="setOrderType('dine_in')">🍽️ Joyida (Restoran)</button>
+            <button class="type-btn" id="typeTakeaway" onclick="setOrderType('takeaway')">🛍️ Olib ketish</button>
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 mb-1">Izoh (Komentariya)</label>
-          <input type="text" id="orderComment" placeholder="Piyozsiz bo'lsin, sous alohida va h.k." class="w-full bg-gray-900 border border-gray-700 text-xs text-white rounded-xl px-3 py-2.5 focus:outline-none focus:border-donixYellow">
+        <div class="form-group" id="tableGroup">
+          <label>Stol Raqami:</label>
+          <input type="number" id="tableNumber" class="form-control" placeholder="Masalan: 5" />
         </div>
 
-        <!-- Total Calculation -->
-        <div class="bg-gray-900/90 p-3 rounded-xl space-y-1.5 border border-gray-800">
-          <div class="flex justify-between text-xs text-gray-400">
-            <span>Taomlar summasi:</span>
-            <span id="summarySubtotal">0 so'm</span>
-          </div>
-          <div class="flex justify-between text-xs text-gray-400">
-            <span>Xizmat ko'rsatish (0%):</span>
-            <span>0 so'm</span>
-          </div>
-          <div class="flex justify-between text-sm font-black text-white pt-1 border-t border-gray-800">
-            <span>Jami to'lov:</span>
-            <span id="summaryTotal" class="text-donixYellow">0 so'm</span>
-          </div>
+        <div class="form-group">
+          <label>Ismingiz va Telefon raqamingiz:</label>
+          <input type="text" id="customerInfo" class="form-control" placeholder="Ismingiz va +998..." />
         </div>
 
-        <button onclick="submitOrder()" class="w-full donix-gradient-btn font-black py-3.5 rounded-xl shadow-lg transition text-center flex items-center justify-center space-x-2 active:scale-98">
-          <i class="fa-paper-plane fa-solid"></i>
-          <span>BUYURTMANI TASDIQLASH</span>
+        <div class="form-group">
+          <label>Izoh (Opsional):</label>
+          <input type="text" id="orderComment" class="form-control" placeholder="Piyozsiz bo'lsin, va h.k." />
+        </div>
+
+        <button class="btn-submit-order" onclick="submitOrder()">BUYURTMA BERISH 🔥</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-drawer" style="border-top-color: var(--success);">
+      <div class="success-modal">
+        <div class="success-icon-wrap">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <div class="success-title">Buyurtmangiz Qabul Qilindi!</div>
+        <div class="success-desc" id="successDetails">
+          Buyurtmangiz tayyorlanish uchun oshxonaga yuborildi. Tez orada taomlaringiz tayyor bo'ladi!
+        </div>
+        <button class="btn-submit-order" style="background: var(--card-bg); border: 1px solid var(--card-border);" onclick="closeSuccessModal()">
+          Tushunarli
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ORDER CONFIRMATION MODAL (DONIX BRANDING) -->
-  <div id="orderSuccessModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
-    <div class="glass-card w-full max-w-sm rounded-3xl p-6 text-center border border-donixYellow/50 shadow-2xl relative overflow-hidden modal-animate">
-      
-      <!-- Glowing Background Element -->
-      <div class="absolute -top-12 -right-12 w-32 h-32 bg-donixYellow/20 rounded-full blur-2xl"></div>
-      <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-donixRed/20 rounded-full blur-2xl"></div>
-
-      <!-- Animated Success Icon -->
-      <div class="mx-auto w-20 h-20 rounded-full bg-gradient-to-tr from-donixRed to-donixYellow p-1 pulse-animation mb-4 flex items-center justify-center shadow-xl">
-        <div class="w-full h-full bg-gray-950 rounded-full flex items-center justify-center">
-          <i class="fa-solid fa-fire-flame-curved text-donixYellow text-3xl"></i>
-        </div>
-      </div>
-
-      <h3 class="text-xl font-black text-white tracking-wide uppercase">BUYURTMANGIZ QABUL QILINDI!</h3>
-      <p class="text-xs text-gray-400 mt-1">Oshpazlarimiz taomingizni tayyorlashni boshlashdi.</p>
-
-      <div class="my-4 p-3 bg-gray-900/90 rounded-2xl border border-gray-800 text-left space-y-2 text-xs">
-        <div class="flex justify-between text-gray-400">
-          <span>Buyurtma ID:</span>
-          <span id="successOrderId" class="font-mono text-white font-bold">#D-0000</span>
-        </div>
-        <div class="flex justify-between text-gray-400" id="successTableRow">
-          <span>Stol raqami:</span>
-          <span id="successTableNum" class="text-donixYellow font-extrabold">#--</span>
-        </div>
-        <div class="flex justify-between text-gray-400">
-          <span>Tayyor bo'lish vaqti:</span>
-          <span class="text-emerald-400 font-bold">~15-20 daqiqa</span>
-        </div>
-        <div class="flex justify-between text-gray-400 pt-1 border-t border-gray-800">
-          <span>Jami summa:</span>
-          <span id="successTotalAmount" class="text-donixYellow font-black text-sm">0 so'm</span>
-        </div>
-      </div>
-
-      <button onclick="closeSuccessModal()" class="w-full donix-gradient-btn text-black font-black py-3 rounded-xl shadow-lg active:scale-95 transition uppercase text-xs tracking-wider">
-        TUSHUNDIM / YOPISH
-      </button>
+  <!-- FULLSCREEN ADMIN PANEL -->
+  <div class="admin-modal" id="adminModal">
+    <div class="drawer-header">
+      <div class="drawer-title">🔥 DONIX Admin Paneli</div>
+      <button class="close-btn" onclick="closeAdminPanel()"><i class="fa-solid fa-xmark"></i></button>
     </div>
-  </div>
 
-  <!-- EXPANDED ADMIN PANEL MODAL -->
-  <div id="adminModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex flex-col justify-end">
-    <div class="glass-card w-full h-[92vh] rounded-t-3xl p-5 flex flex-col modal-animate border-t border-donixYellow/50">
-      
-      <!-- Admin Header & Pin Authorization -->
-      <div class="flex items-center justify-between pb-3 border-b border-gray-800">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-sliders text-donixYellow text-xl"></i>
-          <h3 class="text-base font-extrabold text-white">DONIX Boshqaruv Paneli</h3>
+    <div class="admin-nav-tabs">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('tabProducts')">🍔 Taomlar</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tabBanners')">🖼️ Slayder</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tabTables')">🪑 Stollar QR</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tabConfig')">⚙️ Sozlamalar</button>
+    </div>
+
+    <!-- TAB 1: PRODUCTS -->
+    <div class="tab-content active" id="tabProducts">
+      <div class="admin-card">
+        <h4 style="margin-bottom:10px; color:var(--accent-yellow);">Yangi Taom Qo'shish</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <input type="text" id="admProdTitle" class="form-control" placeholder="Taom nomi" />
+          <input type="number" id="admProdPrice" class="form-control" placeholder="Narxi (so'm)" />
+          <input type="text" id="admProdCategory" class="form-control" placeholder="Kategoriya (Lavash, Burger, Pizza, Ichimliklar)" />
+          <input type="text" id="admProdImg" class="form-control" placeholder="Rasm URL (https://...)" />
+          <input type="text" id="admProdDesc" class="form-control" placeholder="Tavsifi" />
+          <button class="btn-submit-order" onclick="saveAdminProduct()">Qo'shish / Saqlash</button>
         </div>
-        <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-gray-800 text-gray-400 flex items-center justify-center hover:bg-gray-700">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
       </div>
 
-      <!-- PIN AUTH SCREEN (If not unlocked) -->
-      <div id="adminPinScreen" class="flex-1 flex flex-col items-center justify-center p-4">
-        <i class="fa-solid fa-lock text-4xl text-donixYellow mb-3"></i>
-        <h4 class="text-sm font-bold text-white mb-1">Admin parolini kiriting</h4>
-        <p class="text-xs text-gray-400 mb-4 text-center">Boshqaruv paneliga kirish uchun PIN kodni yozing (Boshlang'ich: 1234)</p>
-        <input type="password" id="adminPinInput" placeholder="PIN Kod" class="w-44 text-center bg-gray-900 border border-gray-700 text-lg font-mono text-donixYellow rounded-xl px-3 py-2 mb-3 focus:outline-none focus:border-donixYellow">
-        <button onclick="verifyAdminPin()" class="donix-gradient-btn text-black font-extrabold px-6 py-2.5 rounded-xl text-xs">Kirish</button>
+      <div class="admin-card">
+        <h4>Mavjud Taomlar</h4>
+        <div id="admProductsList" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: BANNERS / SLIDER -->
+    <div class="tab-content" id="tabBanners">
+      <div class="admin-card">
+        <h4 style="margin-bottom:10px; color:var(--accent-yellow);">Yangi Banner / Aksiya Qo'shish</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <input type="text" id="admBannerTitle" class="form-control" placeholder="Banner Sarlavhasi (masalan: AKSIYA 2+1)" />
+          <input type="text" id="admBannerSub" class="form-control" placeholder="Ostki yozuv (masalan: Har bir 2-burgerga pepsi bepul)" />
+          <input type="text" id="admBannerBadge" class="form-control" placeholder="Belgi (masalan: TOP CHEGIRMA)" />
+          <input type="text" id="admBannerImg" class="form-control" placeholder="Rasm URL (https://...)" />
+          <button class="btn-submit-order" onclick="saveAdminBanner()">Bannerni Saqlash</button>
+        </div>
       </div>
 
-      <!-- MAIN ADMIN PANEL (Hidden until authenticated) -->
-      <div id="adminMainContent" class="hidden flex-1 flex flex-col overflow-hidden">
-        
-        <!-- Navigation Tabs -->
-        <div class="flex border-b border-gray-800 mt-2 space-x-1">
-          <button onclick="switchAdminTab('menu')" id="tabBtn-menu" class="flex-1 py-2 text-xs font-bold text-donixYellow border-b-2 border-donixYellow">
-            <i class="fa-solid fa-utensils mr-1"></i> Menyu
-          </button>
-          <button onclick="switchAdminTab('slider')" id="tabBtn-slider" class="flex-1 py-2 text-xs font-bold text-gray-400 border-b-2 border-transparent">
-            <i class="fa-solid fa-images mr-1"></i> Aksiyalar
-          </button>
-          <button onclick="switchAdminTab('qr')" id="tabBtn-qr" class="flex-1 py-2 text-xs font-bold text-gray-400 border-b-2 border-transparent">
-            <i class="fa-solid fa-qrcode mr-1"></i> QR Stol
-          </button>
-          <button onclick="switchAdminTab('settings')" id="tabBtn-settings" class="flex-1 py-2 text-xs font-bold text-gray-400 border-b-2 border-transparent">
-            <i class="fa-solid fa-gear mr-1"></i> Baza
-          </button>
+      <div class="admin-card">
+        <h4>Mavjud Bannerlar</h4>
+        <div id="admBannersList" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: TABLES & QR GENERATOR -->
+    <div class="tab-content" id="tabTables">
+      <div class="admin-card">
+        <h4 style="margin-bottom:10px; color:var(--accent-yellow);">Stol QR Kodini Yaratish</h4>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
+          Stol raqamini kiriting. Tizim avfomatik ravishda Vercel saytingiz uchun havola va chop etish uchun QR-kod yaratib beradi.
+        </p>
+        <div style="display:flex; gap:8px;">
+          <input type="number" id="qrTableNum" class="form-control" placeholder="Stol № (masalan: 5)" />
+          <button class="btn-submit-order" style="margin:0; width:120px;" onclick="generateTableQR()">Yaratish</button>
         </div>
 
-        <!-- TAB 1: MENU MANAGEMENT -->
-        <div id="adminTab-menu" class="flex-1 overflow-y-auto py-3 space-y-4 pr-1">
-          <!-- Add Item Form -->
-          <div class="bg-gray-900/90 p-3.5 rounded-2xl border border-gray-800 space-y-2.5">
-            <h4 class="text-xs font-bold text-donixYellow uppercase tracking-wider">Yangi taom qo'shish</h4>
-            <input type="text" id="newItemName" placeholder="Taom nomi (masalan: Donix Lavash)" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-            
-            <div class="grid grid-cols-2 gap-2">
-              <select id="newItemCategory" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-                <option value="PIZZA">Pitsa (PIZZA)</option>
-                <option value="BURGER">Burgerlar (BURGER)</option>
-                <option value="LAVASH">Lavash (LAVASH)</option>
-                <option value="SETLAR">Setlar / Combo</option>
-                <option value="SNEKLAR">Sneklar / Fri</option>
-                <option value="DRINKS">Ichimliklar</option>
-                <option value="SAUCES">Souslar</option>
-                <option value="DESSERTS">Dessertlar</option>
-              </select>
-              <input type="number" id="newItemPrice" placeholder="Narxi (so'm)" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-            </div>
-
-            <input type="text" id="newItemVariantPrice" placeholder="O'lcham / Variant (masalan: Katta: 45 000)" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-            <input type="text" id="newItemImage" placeholder="Rasm havolasi (URL)" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-
-            <button onclick="addNewProduct()" class="w-full donix-gradient-btn text-black font-extrabold py-2.5 rounded-xl text-xs transition">
-              <i class="fa-solid fa-plus mr-1"></i> Menyuga qo'shish
-            </button>
+        <div id="qrResultArea" style="text-align:center; display:none; margin-top:15px;">
+          <div style="font-size:13px; font-weight:bold; color:#fff;" id="qrGeneratedUrl"></div>
+          <div class="qr-preview-box">
+            <img id="qrImageElem" src="" alt="QR Code" />
           </div>
-
-          <!-- Existing Products List -->
-          <div>
-            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Menyuni tahrirlash / o'chirish</h4>
-            <div id="adminItemsList" class="space-y-2">
-              <!-- Dynamic -->
-            </div>
-          </div>
+          <br/>
+          <button class="admin-tab-btn" style="margin-top:10px;" onclick="copyTableUrl()">🔗 Havolani nusxalash</button>
         </div>
+      </div>
+    </div>
 
-        <!-- TAB 2: SLIDER & PROMOTIONS MANAGEMENT -->
-        <div id="adminTab-slider" class="hidden flex-1 overflow-y-auto py-3 space-y-4 pr-1">
-          <div class="bg-gray-900/90 p-3.5 rounded-2xl border border-gray-800 space-y-2.5">
-            <h4 class="text-xs font-bold text-donixYellow uppercase tracking-wider">Yangi Aksiya / Slayd qo'shish</h4>
-            <input type="text" id="newSlideBadge" placeholder="Belgi (masalan: AKSIYA 2026 / -20%)" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-            <input type="text" id="newSlideTitle" placeholder="Slayd sarlavhasi (masalan: BO'MBA SET)" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-            <input type="text" id="newSlideSubtitle" placeholder="Kichik matn / Narx izohi" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-            <input type="text" id="newSlideImage" placeholder="Rasm URL havolasi" class="w-full bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:border-donixYellow">
-            
-            <button onclick="addNewSlide()" class="w-full donix-gradient-btn text-black font-extrabold py-2.5 rounded-xl text-xs">
-              <i class="fa-solid fa-plus mr-1"></i> Slaydni saqlash
-            </button>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Mavjud slaydlar</h4>
-            <div id="adminSlidesList" class="space-y-2">
-              <!-- Dynamic -->
-            </div>
-          </div>
+    <!-- TAB 4: CONFIG & SYNC -->
+    <div class="tab-content" id="tabConfig">
+      <div class="admin-card">
+        <h4 style="margin-bottom:10px; color:var(--accent-yellow);">Telegram Bot Integratsiyasi</h4>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
+          Ushbu parametrlar kod ichida `TELEGRAM_BOT_TOKEN` va `ADMIN_CHAT_ID` o'zgaruvchilarida ko'rsatiladi.
+        </p>
+        <div style="font-size:12px; background:#000; padding:10px; border-radius:8px; border:1px solid var(--card-border);">
+          <div><strong>Bot Token:</strong> <span id="dispBotToken"></span></div>
+          <div><strong>Admin Chat ID:</strong> <span id="dispChatId"></span></div>
         </div>
+      </div>
 
-        <!-- TAB 3: TABLE QR GENERATOR -->
-        <div id="adminTab-qr" class="hidden flex-1 overflow-y-auto py-3 space-y-4 pr-1">
-          <div class="bg-gray-900/90 p-4 rounded-2xl border border-gray-800 space-y-3">
-            <h4 class="text-xs font-bold text-donixYellow uppercase tracking-wider">Stol uchun QR-kod yaratish</h4>
-            <p class="text-xs text-gray-400">Stol raqamini kiriting va bot avtomati ravishda menyu havolasi va QR-kodini tayyorlaydi.</p>
-            
-            <div class="flex space-x-2">
-              <input type="number" id="generateTableNum" placeholder="Stol № (Masalan: 5)" class="flex-1 bg-gray-800 border border-gray-700 text-xs text-white rounded-xl px-3 py-2.5 focus:outline-none focus:border-donixYellow">
-              <button onclick="generateTableQR()" class="donix-gradient-btn text-black font-black px-4 py-2.5 rounded-xl text-xs">
-                Yaratish
-              </button>
-            </div>
-
-            <!-- Result Box -->
-            <div id="qrResultBox" class="hidden mt-4 p-4 bg-gray-950 rounded-2xl border border-gray-800 flex flex-col items-center text-center space-y-3">
-              <div class="bg-white p-2.5 rounded-2xl shadow-lg">
-                <img id="qrImagePreview" src="" alt="QR Code" class="w-40 h-40 object-contain">
-              </div>
-              <p class="text-xs font-extrabold text-donixYellow" id="qrTableLabel">Stol № --</p>
-              <input type="text" id="qrGeneratedUrl" readonly class="w-full bg-gray-900 border border-gray-800 text-[11px] text-gray-300 rounded-xl px-2.5 py-2 text-center font-mono">
-              
-              <div class="flex space-x-2 w-full">
-                <button onclick="copyGeneratedUrl()" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-xl text-xs">
-                  <i class="fa-regular fa-copy mr-1"></i> Havolani nusxalash
-                </button>
-                <a id="downloadQrBtn" href="#" target="_blank" download="DONIX_QR.png" class="flex-1 bg-donixYellow text-black font-bold py-2 rounded-xl text-xs flex items-center justify-center">
-                  <i class="fa-solid fa-download mr-1"></i> QR Yuklash
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 4: DATABASE EXPORT/IMPORT -->
-        <div id="adminTab-settings" class="hidden flex-1 overflow-y-auto py-3 space-y-4 pr-1">
-          <div class="bg-gray-900/90 p-4 rounded-2xl border border-gray-800 space-y-3">
-            <h4 class="text-xs font-bold text-donixYellow uppercase tracking-wider">Ma'lumotlar bazasini boshqarish</h4>
-            <p class="text-xs text-gray-400">Menyu va slaydlarni zaxiralash yoki boshqa qurilmaga ko'chirish uchun JSON fayldan foydalaning.</p>
-            
-            <div class="flex space-x-2">
-              <button onclick="exportDatabase()" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl text-xs">
-                <i class="fa-solid fa-download mr-1"></i> Exsport (Yuklab olish)
-              </button>
-              <button onclick="resetToDefaults()" class="flex-1 bg-red-950/80 border border-red-500/40 text-red-400 font-bold py-2.5 rounded-xl text-xs">
-                <i class="fa-solid fa-rotate-right mr-1"></i> Qayta tiklash
-              </button>
-            </div>
-          </div>
-        </div>
-
+      <div class="admin-card">
+        <h4 style="margin-bottom:10px; color:var(--accent-yellow);">Ma'lumotlarni Eksport / Import</h4>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">
+          O'zgarishlarni Vercel kodingizga doimiy saqlash uchun JSON faylini yuklab olishingiz mumkin.
+        </p>
+        <button class="admin-tab-btn" onclick="exportJSONData()"><i class="fa-solid fa-download"></i> JSON Eksport</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Config: Telegram Bot Integration
-    const TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"; // O'zingizning bot tokeningiz
-    const ADMIN_CHAT_ID = "YOUR_CHAT_OR_GROUP_ID";    // Admin guruh yoki kanal Chat ID (-100...)
+    /* ==========================================================================
+       1. TELEGRAM BOT & ADMIN CONFIGURATION
+       ========================================================================== */
+    // TELEGRAM BOT TOKEN
+    const TELEGRAM_BOT_TOKEN = "7931213226:AAHICVv_7vNQN69Ovr4t614n92JhkPsgMAY"; 
     
-    // Telegram Admin IDs allowed
-    const ALLOWED_ADMIN_IDS = [123456789, 987654321]; 
-    let isAdminUnlocked = false;
+    // TELEGRAM ADMIN GROUP / CHANNEL ID (Shu guruhga zakazlar boradi)
+    const ADMIN_CHAT_ID = "-1003707408510"; 
 
-    // Telegram WebApp SDK Setup
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    // ALLOWED ADMIN TELEGRAM USER IDs (Faqat shu ID egalariga Admin tugmasi ko'rinadi)
+    const ALLOWED_ADMIN_IDS = [7794270699]; 
+
+    /* ==========================================================================
+       2. INITIAL DATA STORES (Local Storage supported)
+       ========================================================================== */
+    const DEFAULT_PRODUCTS = [
+      { id: 1, title: "Donix Motivatsya Lavash", price: 38000, category: "Lavash", img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=500", desc: "Mol go'shti, sir, maxsus sous va chipslar bilan" },
+      { id: 2, title: "Double Cheese Burger", price: 34000, category: "Burger", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500", desc: "2x mol go'shti kotleti, erigan sir va tuzlangan bodring" },
+      { id: 3, title: "Pepperoni Pizza 30cm", price: 75000, category: "Pizza", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500", desc: "Pikant pepperoni, Motsarella pishlog'i va tomat sousi" },
+      { id: 4, title: "Pepsi 1.5L", price: 15000, category: "Ichimliklar", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500", desc: "Muzdek salqin gazlangan ichimlik" }
+    ];
+
+    const DEFAULT_BANNERS = [
+      { id: 1, title: "DONIX MEGA AKSIYA ⚡", sub: "2 ta Katta Lavash oling - Pepsi 1L Bepul!", badge: "TOP TAKLIF", img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800" },
+      { id: 2, title: "CHEEZY WEEKEND 🧀", sub: "Barcha Pitssalarga 15% Chegirma", badge: "CHEGIRMA", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800" }
+    ];
+
+    let products = JSON.parse(localStorage.getItem('donix_products')) || DEFAULT_PRODUCTS;
+    let banners = JSON.parse(localStorage.getItem('donix_banners')) || DEFAULT_BANNERS;
+    let cart = [];
+    let selectedCategory = "Barchasi";
+    let currentOrderType = "dine_in"; // 'dine_in' or 'takeaway'
+    let currentBannerIndex = 0;
+    let bannerInterval = null;
+
+    /* ==========================================================================
+       3. TELEGRAM WEBAPP & AUTHENTICATION
+       ========================================================================== */
+    const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.expand();
       tg.ready();
     }
 
-    // DEFAULT MENU ITEMS (DONIX Menu in Uzbek)
-    const defaultProducts = [
-      { id: 1, name: "Donix Pizza Special", category: "PIZZA", price: 85000, variantName: "Katta 33sm", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80" },
-      { id: 2, name: "Peperoni Pizza", category: "PIZZA", price: 68000, variantName: "Katta", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400&q=80" },
-      { id: 3, name: "Margaritta Pizza", category: "PIZZA", price: 58000, variantName: "O'rta", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80" },
-      { id: 4, name: "Gamburger Classic", category: "BURGER", price: 24000, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80" },
-      { id: 5, name: "Chizburger Double", category: "BURGER", price: 32000, img: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400&q=80" },
-      { id: 6, name: "Lavash Go'shtli (Standart)", category: "LAVASH", price: 33000, img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&q=80" },
-      { id: 7, name: "Lavash Tovuqli Cheese", category: "LAVASH", price: 30000, img: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400&q=80" },
-      { id: 8, name: "BO'MBA SET (6 tasi 1 da)", category: "SETLAR", price: 107000, img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80" },
-      { id: 9, name: "Kartoshka Fri", category: "SNEKLAR", price: 16000, img: "https://images.unsplash.com/photo-1576107232684-1279f3908594?w=400&q=80" },
-      { id: 10, name: "Pepsi 1.5L", category: "DRINKS", price: 15000, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80" },
-      { id: 11, name: "Pishloqli Sous", category: "SAUCES", price: 3000, img: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=400&q=80" }
-    ];
+    function checkAdminAccess() {
+      const adminBtn = document.getElementById("adminPanelBtn");
+      let isAuthorized = false;
 
-    // DEFAULT PROMOTION SLIDES
-    const defaultSlides = [
-      { id: 1, badge: "Aksiya 2026", title: "BO'MBA SET — 6 tasi 1 da!", subtitle: "Super narx: 107 000 so'm", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80" },
-      { id: 2, badge: "Chegirma -15%", title: "Barcha Pitsalar uchun!", subtitle: "Issiq va o'zgacha shirin pitsalar", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&q=80" },
-      { id: 3, badge: "Tekinga yetkazish", title: "Combo Setlar Buyurtma Qiling", subtitle: "Mavsumiy maxsus takliflar", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80" }
-    ];
-
-    const categories = [
-      { id: "ALL", name: "Barcha menyu", icon: "fa-border-all" },
-      { id: "PIZZA", name: "Pitsa", icon: "fa-pizza-slice" },
-      { id: "BURGER", name: "Burgerlar", icon: "fa-burger" },
-      { id: "LAVASH", name: "Lavash", icon: "fa-scroll" },
-      { id: "SETLAR", name: "Setlar", icon: "fa-box-open" },
-      { id: "SNEKLAR", name: "Sneklar", icon: "fa-drumstick-bite" },
-      { id: "DRINKS", name: "Ichimliklar", icon: "fa-wine-glass" },
-      { id: "SAUCES", name: "Souslar", icon: "fa-bottle-droplet" },
-      { id: "DESSERTS", name: "Dessertlar", icon: "fa-ice-cream" }
-    ];
-
-    // State
-    let products = JSON.parse(localStorage.getItem("donix_products")) || defaultProducts;
-    let slides = JSON.parse(localStorage.getItem("donix_slides")) || defaultSlides;
-    let cart = [];
-    let selectedCategory = "ALL";
-    let currentSlide = 0;
-    let detectedTableNum = null;
-
-    document.addEventListener("DOMContentLoaded", () => {
-      checkTableFromQR();
-      renderCategories();
-      renderSlider();
-      renderProducts();
-      updateCartUI();
-      startAutoBanner();
-    });
-
-    // Read Table Number from URL parameter ?table=X
-    function checkTableFromQR() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const table = urlParams.get('table');
-      if (table) {
-        detectedTableNum = table;
-        document.getElementById("tableNumber").value = table;
-        document.getElementById("headerTableNum").innerText = `Stol #${table}`;
-        document.getElementById("tableBadgeHeader").classList.remove("hidden");
-      }
-    }
-
-    // Auto-sliding Banner
-    function startAutoBanner() {
-      setInterval(() => {
-        if (slides.length > 0) {
-          currentSlide = (currentSlide + 1) % slides.length;
-          goToSlide(currentSlide);
+      // Check Telegram WebApp user
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const userId = tg.initDataUnsafe.user.id;
+        if (ALLOWED_ADMIN_IDS.includes(userId)) {
+          isAuthorized = true;
         }
-      }, 3800);
-    }
+      }
 
-    function goToSlide(index) {
-      currentSlide = index;
-      const slider = document.getElementById("bannerSlider");
-      slider.style.transform = `translateX(-${index * 100}%)`;
-      
-      const dots = document.getElementById("sliderDots").children;
-      for (let i = 0; i < dots.length; i++) {
-        dots[i].className = i === index 
-          ? "w-2.5 h-2.5 rounded-full bg-donixYellow transition-all duration-300" 
-          : "w-2 h-2 rounded-full bg-gray-600 transition-all duration-300";
+      // Allow stored session for testing/web
+      if (sessionStorage.getItem("donix_admin_auth") === "true") {
+        isAuthorized = true;
+      }
+
+      if (isAuthorized) {
+        adminBtn.style.display = "inline-flex";
+      } else {
+        adminBtn.style.display = "none";
       }
     }
 
-    function renderSlider() {
-      const slider = document.getElementById("bannerSlider");
-      const dots = document.getElementById("sliderDots");
+    function openAdminPanel() {
+      // Security check if accessed via browser outside TG
+      if (sessionStorage.getItem("donix_admin_auth") !== "true") {
+        const promptId = prompt("Adminlik huquqini tasdiqlash uchun Telegram ID yoki Parolni kiriting:");
+        if (ALLOWED_ADMIN_IDS.includes(Number(promptId)) || promptId === "admin123") {
+          sessionStorage.setItem("donix_admin_auth", "true");
+        } else {
+          alert("Kirish rad etildi! Siz Admin emassiz.");
+          return;
+        }
+      }
 
-      if (slides.length === 0) {
-        slider.innerHTML = `<div class="p-4 text-center text-xs text-gray-500">Aksiyalar yo'q</div>`;
+      document.getElementById("adminModal").classList.add("active");
+      renderAdminProducts();
+      renderAdminBanners();
+      document.getElementById("dispBotToken").innerText = TELEGRAM_BOT_TOKEN;
+      document.getElementById("dispChatId").innerText = ADMIN_CHAT_ID;
+    }
+
+    function closeAdminPanel() {
+      document.getElementById("adminModal").classList.remove("active");
+    }
+
+    /* ==========================================================================
+       4. RENDERERS (UI & PRODUCTS)
+       ========================================================================== */
+    function initApp() {
+      checkAdminAccess();
+      checkTableFromURL();
+      renderBanners();
+      renderCategories();
+      renderProducts();
+      startBannerCarousel();
+    }
+
+    function checkTableFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tableParam = urlParams.get('table');
+      if (tableParam) {
+        const tableInput = document.getElementById("tableNumber");
+        if (tableInput) tableInput.value = tableParam;
+      }
+    }
+
+    // Render Banners Carousel
+    function renderBanners() {
+      const wrapper = document.getElementById("bannerCarousel");
+      if (!banners.length) {
+        wrapper.style.display = "none";
         return;
       }
-
-      slider.innerHTML = slides.map(s => `
-        <div class="min-w-full relative h-36 bg-gradient-to-r from-gray-950 via-gray-900 to-black p-4 flex items-center justify-between border-b border-gray-800">
-          <div class="z-10 max-w-[65%]">
-            <span class="bg-donixYellow text-black font-black text-[10px] px-2 py-0.5 rounded-md uppercase tracking-wider">${s.badge}</span>
-            <h3 class="text-sm font-black text-white mt-1 leading-tight">${s.title}</h3>
-            <p class="text-xs text-donixYellow font-bold mt-1">${s.subtitle}</p>
+      wrapper.style.display = "block";
+      wrapper.innerHTML = banners.map((b, i) => `
+        <div class="banner-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${b.img}')">
+          <div class="banner-overlay"></div>
+          <div class="banner-content">
+            ${b.badge ? `<span class="banner-badge">${b.badge}</span>` : ''}
+            <div class="banner-title">${b.title}</div>
+            <div class="banner-sub">${b.sub}</div>
           </div>
-          <img src="${s.img}" class="absolute right-0 top-0 h-full w-40 object-cover opacity-80 rounded-r-2xl">
         </div>
-      `).join("");
+      `).join('');
+    }
 
-      dots.innerHTML = slides.map((_, i) => `
-        <button onclick="goToSlide(${i})" class="${i === 0 ? 'w-2.5 h-2.5 rounded-full bg-donixYellow' : 'w-2 h-2 rounded-full bg-gray-600'} transition-all duration-300"></button>
-      `).join("");
+    function startBannerCarousel() {
+      if (bannerInterval) clearInterval(bannerInterval);
+      bannerInterval = setInterval(() => {
+        const slides = document.querySelectorAll('.banner-slide');
+        if (!slides.length) return;
+        slides[currentBannerIndex].classList.remove('active');
+        currentBannerIndex = (currentBannerIndex + 1) % slides.length;
+        slides[currentBannerIndex].classList.add('active');
+      }, 4000);
     }
 
     // Render Categories
     function renderCategories() {
-      const container = document.getElementById("categoriesContainer");
-      container.innerHTML = categories.map(cat => `
-        <button onclick="selectCategory('${cat.id}')" 
-                class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all duration-200 ${selectedCategory === cat.id ? 'active-category' : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white'}">
-          <i class="fa-solid ${cat.icon}"></i>
-          <span>${cat.name}</span>
+      const cats = ["Barchasi", ...new Set(products.map(p => p.category))];
+      const bar = document.getElementById("categoriesBar");
+      bar.innerHTML = cats.map(c => `
+        <button class="cat-btn ${c === selectedCategory ? 'active' : ''}" onclick="selectCategory('${c}')">
+          ${c}
         </button>
-      `).join("");
+      `).join('');
     }
 
-    function selectCategory(catId) {
-      selectedCategory = catId;
+    function selectCategory(cat) {
+      selectedCategory = cat;
       renderCategories();
-      const catObj = categories.find(c => c.id === catId);
-      document.getElementById("currentCategoryTitle").innerText = catObj ? catObj.name : "Barcha menyu";
       renderProducts();
     }
 
-    // Render Products Grid
-    function renderProducts() {
+    // Render Products
+    function renderProducts(filterQuery = "") {
       const grid = document.getElementById("productsGrid");
-      const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
+      let filtered = products;
 
-      const filtered = products.filter(p => {
-        const matchesCat = selectedCategory === "ALL" || p.category === selectedCategory;
-        const matchesSearch = p.name.toLowerCase().includes(searchQuery);
-        return matchesCat && matchesSearch;
-      });
+      if (selectedCategory !== "Barchasi") {
+        filtered = filtered.filter(p => p.category === selectedCategory);
+      }
 
-      document.getElementById("productCountBadge").innerText = filtered.length;
+      if (filterQuery.trim() !== "") {
+        const q = filterQuery.toLowerCase();
+        filtered = filtered.filter(p => p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+      }
 
       if (filtered.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-2 py-12 text-center text-gray-500">
-            <i class="fa-solid fa-utensils text-3xl mb-2 block opacity-40"></i>
-            <p class="text-xs font-semibold">Ushbu bo'limda taomlar topilmadi</p>
-          </div>
-        `;
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Taomlar topilmadi</div>`;
         return;
       }
 
-      grid.innerHTML = filtered.map(p => {
-        const cartQty = getCartItemQuantity(p.id);
-
-        return `
-          <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between product-card border border-donixBorder">
-            <div class="relative h-28 bg-gray-950 overflow-hidden">
-              <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transition transform hover:scale-105 duration-300" loading="lazy">
-              ${p.variantName ? `<span class="absolute top-2 left-2 bg-black/80 backdrop-blur-md text-[10px] text-donixYellow font-black px-2 py-0.5 rounded-lg border border-donixYellow/40">${p.variantName}</span>` : ''}
-            </div>
-            
-            <div class="p-3 flex-1 flex flex-col justify-between">
-              <div>
-                <h3 class="font-extrabold text-xs text-white leading-snug line-clamp-2">${p.name}</h3>
-                <div class="mt-1 text-donixYellow font-black text-xs">
-                  ${formatMoney(p.price)} so'm
-                </div>
-              </div>
-
-              <div class="mt-3">
-                ${cartQty > 0 ? `
-                  <div class="flex items-center justify-between bg-gray-950 border border-gray-700 rounded-xl p-1">
-                    <button onclick="decreaseCart(${p.id})" class="w-6 h-6 rounded-lg bg-gray-800 text-white flex items-center justify-center active:bg-red-600 transition">
-                      <i class="fa-solid fa-minus text-[10px]"></i>
-                    </button>
-                    <span class="text-xs font-black text-white">${cartQty}</span>
-                    <button onclick="increaseCart(${p.id})" class="w-6 h-6 rounded-lg donix-gradient-btn text-black flex items-center justify-center active:scale-95 transition">
-                      <i class="fa-solid fa-plus text-[10px]"></i>
-                    </button>
-                  </div>
-                ` : `
-                  <button onclick="addToCart(${p.id})" class="w-full bg-gray-900 hover:bg-donixYellow hover:text-black border border-gray-700 text-white font-extrabold py-2 rounded-xl text-xs transition flex items-center justify-center space-x-1.5 active:scale-95">
-                    <i class="fa-solid fa-plus text-[10px]"></i>
-                    <span>Qo'shish</span>
-                  </button>
-                `}
-              </div>
-            </div>
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <img src="${p.img}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x200?text=DONIX'" />
           </div>
-        `;
-      }).join("");
+          <div>
+            <div class="product-title">${p.title}</div>
+            <div class="product-desc">${p.desc || ''}</div>
+          </div>
+          <div class="product-bottom">
+            <div class="product-price">${formatPrice(p.price)} so'm</div>
+            <button class="add-btn" onclick="addToCart(${p.id})">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
     }
 
-    function filterProducts() {
-      renderProducts();
+    function handleSearch() {
+      const query = document.getElementById("searchInput").value;
+      renderProducts(query);
     }
 
-    // Cart Engine
-    function getCartItemQuantity(productId) {
-      const item = cart.find(c => c.product.id === productId);
-      return item ? item.quantity : 0;
+    function formatPrice(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
 
+    /* ==========================================================================
+       5. CART & ORDER MANAGEMENT
+       ========================================================================== */
     function addToCart(productId) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
+      const prod = products.find(p => p.id === productId);
+      if (!prod) return;
 
-      const existing = cart.find(c => c.product.id === productId);
+      const existing = cart.find(item => item.id === productId);
       if (existing) {
-        existing.quantity++;
+        existing.qty++;
       } else {
-        cart.push({ product, quantity: 1 });
+        cart.push({ ...prod, qty: 1 });
       }
-      updateCartUI();
-      renderProducts();
-      
-      if (tg && tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('light');
-      }
-    }
 
-    function increaseCart(productId) {
-      addToCart(productId);
-    }
-
-    function decreaseCart(productId) {
-      const index = cart.findIndex(c => c.product.id === productId);
-      if (index !== -1) {
-        if (cart[index].quantity > 1) {
-          cart[index].quantity--;
-        } else {
-          cart.splice(index, 1);
-        }
-      }
       updateCartUI();
-      renderProducts();
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
 
     function updateCartUI() {
-      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const totalPrice = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
-      document.getElementById("cartTotalCount").innerText = totalCount;
-      document.getElementById("cartTotalPrice").innerText = `${formatMoney(totalPrice)} so'm`;
-      
-      document.getElementById("summarySubtotal").innerText = `${formatMoney(totalPrice)} so'm`;
-      document.getElementById("summaryTotal").innerText = `${formatMoney(totalPrice)} so'm`;
+      const wrapper = document.getElementById("cartBarWrapper");
+      document.getElementById("cartCount").innerText = totalQty;
+      document.getElementById("cartTotal").innerText = `${formatPrice(totalPrice)} so'm`;
 
-      const floatBar = document.getElementById("floatingCart");
-      if (totalCount > 0) {
-        floatBar.classList.remove("hidden");
+      if (totalQty > 0) {
+        wrapper.style.display = "block";
       } else {
-        floatBar.classList.add("hidden");
+        wrapper.style.display = "none";
         closeCartModal();
       }
-
-      renderCartModalList();
     }
 
-    function renderCartModalList() {
-      const container = document.getElementById("cartItemsList");
-      if (cart.length === 0) {
-        container.innerHTML = `<p class="text-center text-xs text-gray-500 py-6">Savatcha bo'sh</p>`;
-        return;
-      }
-
-      container.innerHTML = cart.map(item => `
-        <div class="py-2.5 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <img src="${item.product.img}" class="w-12 h-12 rounded-xl object-cover bg-gray-900 border border-gray-800">
-            <div>
-              <h4 class="text-xs font-extrabold text-white">${item.product.name}</h4>
-              <p class="text-[11px] text-donixYellow font-bold">${formatMoney(item.product.price)} so'm</p>
-            </div>
+    function openCartModal() {
+      if (cart.length === 0) return;
+      const list = document.getElementById("cartItemsList");
+      list.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <div>
+            <div class="cart-item-title">${item.title}</div>
+            <div class="cart-item-price">${formatPrice(item.price * item.qty)} so'm</div>
           </div>
-
-          <div class="flex items-center space-x-2 bg-gray-900 p-1 rounded-xl border border-gray-800">
-            <button onclick="decreaseCart(${item.product.id})" class="w-6 h-6 rounded-lg bg-gray-800 text-white flex items-center justify-center">
-              <i class="fa-solid fa-minus text-[10px]"></i>
-            </button>
-            <span class="text-xs font-black text-white px-1">${item.quantity}</span>
-            <button onclick="increaseCart(${item.product.id})" class="w-6 h-6 rounded-lg donix-gradient-btn text-black flex items-center justify-center">
-              <i class="fa-solid fa-plus text-[10px]"></i>
-            </button>
+          <div class="cart-qty-ctrl">
+            <button class="cart-qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+            <span style="font-size:13px; font-weight:bold;">${item.qty}</span>
+            <button class="cart-qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
           </div>
         </div>
-      `).join("");
-    }
+      `).join('');
 
-    // Modal Control
-    function openCartModal() {
-      document.getElementById("cartModal").classList.remove("hidden");
+      document.getElementById("cartModal").classList.add("active");
     }
 
     function closeCartModal() {
-      document.getElementById("cartModal").classList.add("hidden");
+      document.getElementById("cartModal").classList.remove("active");
     }
 
-    function toggleTableInput() {
-      const orderType = document.getElementById("orderType").value;
-      const tableContainer = document.getElementById("tableNumberContainer");
-      if (orderType === "dine_in") {
-        tableContainer.classList.remove("hidden");
-      } else {
-        tableContainer.classList.add("hidden");
+    function changeQty(id, delta) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== id);
       }
+      updateCartUI();
+      if (cart.length > 0) openCartModal();
     }
 
-    // Submit Order Engine
+    function setOrderType(type) {
+      currentOrderType = type;
+      document.getElementById("typeDineIn").classList.toggle("active", type === 'dine_in');
+      document.getElementById("typeTakeaway").classList.toggle("active", type === 'takeaway');
+      document.getElementById("tableGroup").style.display = type === 'dine_in' ? 'flex' : 'none';
+    }
+
+    /* ==========================================================================
+       6. TELEGRAM BOT ORDER DISPATCH (FIXED API REQUEST)
+       ========================================================================== */
     async function submitOrder() {
       if (cart.length === 0) return;
 
-      const orderType = document.getElementById("orderType").value;
-      const tableNum = document.getElementById("tableNumber").value;
+      const tableNum = document.getElementById("tableNumber").value.trim();
+      const customerInfo = document.getElementById("customerInfo").value.trim();
       const comment = document.getElementById("orderComment").value.trim();
 
-      if (orderType === "dine_in" && !tableNum) {
+      if (currentOrderType === 'dine_in' && !tableNum) {
         alert("Iltimos, stol raqamini kiriting!");
         return;
       }
 
-      const totalPrice = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const orderId = '#D-' + Math.floor(1000 + Math.random() * 9000);
+      const totalSum = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const typeText = currentOrderType === 'dine_in' ? `🍽️ Joyida (Restoran) - STOL №${tableNum}` : `🛍️ Olib ketish`;
 
-      let typeText = "🍽️ Joyida (Restoranda)";
-      if (orderType === "takeaway") typeText = "🛍️ Olib ketish";
-      if (orderType === "delivery") typeText = "🚖 Dostavka (Yetkazish)";
-
-      const user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : { first_name: "Mijoz", username: "guest" };
-
-      // HTML Message for Telegram Admin Group
-      let message = `🔥 <b>YANGI BUYURTMA — DONIX FAST FOOD</b> 🔥\n\n`;
-      message += `🆔 <b>Buyurtma ID:</b> ${orderId}\n`;
-      message += `👤 <b>Mijoz:</b> ${user.first_name} ${user.username ? '(@' + user.username + ')' : ''}\n`;
-      message += `📌 <b>Buyurtma turi:</b> ${typeText}\n`;
-      if (orderType === "dine_in") {
-        message += `🪑 <b>Stol raqami:</b> №${tableNum}\n`;
-      }
-      message += `----------------------------------------\n`;
-      message += `<b>Buyurtma tarkibi:</b>\n`;
+      // Build Message Text for Telegram
+      let orderMsg = `🔥 <b>YANGI BUYURTMA — DONIX FAST FOOD</b>\n`;
+      orderMsg += `------------------------------------\n`;
+      orderMsg += `📌 <b>Turi:</b> ${typeText}\n`;
+      if (customerInfo) orderMsg += `👤 <b>Mijoz:</b> ${customerInfo}\n`;
+      if (comment) orderMsg += `💬 <b>Izoh:</b> ${comment}\n`;
+      orderMsg += `------------------------------------\n`;
+      orderMsg += `<b>TAOMLAR:</b>\n`;
 
       cart.forEach((item, i) => {
-        message += `${i + 1}. <b>${item.product.name}</b> x${item.quantity} = ${formatMoney(item.product.price * item.quantity)} so'm\n`;
+        orderMsg += `${i + 1}. <b>${item.title}</b> x ${item.qty} = ${formatPrice(item.price * item.qty)} so'm\n`;
       });
 
-      message += `----------------------------------------\n`;
-      if (comment) message += `💬 <b>Izoh:</b> ${comment}\n`;
-      message += `💰 <b>JAMI TO'LOV: ${formatMoney(totalPrice)} so'm</b>`;
+      orderMsg += `------------------------------------\n`;
+      orderMsg += `💰 <b>JAMI TO'LOV:</b> ${formatPrice(totalSum)} so'm\n`;
+      orderMsg += `⏰ <b>Vaqti:</b> ${new Date().toLocaleTimeString()}`;
 
-      // 1. Send via WebApp SDK
-      if (tg) {
-        tg.sendData(JSON.stringify({
-          orderId,
-          cart,
-          orderType,
-          tableNum,
-          comment,
-          totalPrice
-        }));
+      // Show Sending State
+      const submitBtn = document.querySelector(".btn-submit-order");
+      submitBtn.innerText = "Yuborilmoqda...";
+      submitBtn.disabled = true;
+
+      // Send Order via Telegram Bot API POST Request
+      const isSent = await sendTelegramMessage(orderMsg);
+
+      submitBtn.innerText = "BUYURTMA BERISH 🔥";
+      submitBtn.disabled = false;
+
+      if (isSent) {
+        closeCartModal();
+        document.getElementById("successDetails").innerHTML = `
+          <b>Buyurtma turi:</b> ${typeText}<br/>
+          <b>Jami sumangiz:</b> ${formatPrice(totalSum)} so'm<br/><br/>
+          Buyurtmangiz qabul qilindi va oshxonaga yuborildi!
+        `;
+        document.getElementById("successModal").classList.add("active");
+        
+        // Reset Cart
+        cart = [];
+        updateCartUI();
+      }
+    }
+
+    async function sendTelegramMessage(htmlText) {
+      const token = TELEGRAM_BOT_TOKEN.trim();
+      const chatId = ADMIN_CHAT_ID.trim();
+
+      if (!token || token.includes("example_token") || !chatId || chatId.includes("1987654321")) {
+        alert("⚠️ Внимание: Укажите реальный TELEGRAM_BOT_TOKEN и ADMIN_CHAT_ID в файле index.html (строки 210-213)!");
+        return false;
       }
 
-      // 2. Direct Bot API Call to Telegram Group
-      if (TELEGRAM_BOT_TOKEN !== "7931213226:AAHICVv_7vNQN69Ovr4t614n92JhkPsgMAY" && ADMIN_CHAT_ID !== "-1003707408510") {
-        try {
-          await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: ADMIN_CHAT_ID,
-              text: message,
-              parse_mode: 'HTML'
-            })
-          });
-        } catch (e) {
-          console.error("Telegram API Error: ", e);
-        }
-      }
-
-      // Show Custom Success Pop-Up Modal
-      document.getElementById("successOrderId").innerText = orderId;
-      document.getElementById("successTotalAmount").innerText = `${formatMoney(totalPrice)} so'm`;
+      const url = `https://api.telegram.org/bot${token}/sendMessage`;
       
-      if (orderType === "dine_in") {
-        document.getElementById("successTableNum").innerText = `#${tableNum}`;
-        document.getElementById("successTableRow").classList.remove("hidden");
-      } else {
-        document.getElementById("successTableRow").classList.add("hidden");
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: htmlText,
+            parse_mode: 'HTML'
+          })
+        });
+
+        const resData = await response.json();
+
+        if (!resData.ok) {
+          console.error("Telegram API Error:", resData);
+          alert(`Telegram Xatosi: ${resData.description || 'Xabar yuborilmadi'}. Guruhda bot admin ekanligini va Chat ID to'g'riligini tekshiring.`);
+          return false;
+        }
+
+        return true;
+      } catch (error) {
+        console.error("Network Error:", error);
+        alert("Internet Bilan Bog'lanishda Xatolik Yuz Berdi!");
+        return false;
       }
-
-      closeCartModal();
-      document.getElementById("orderSuccessModal").classList.remove("hidden");
-
-      // Reset cart
-      cart = [];
-      updateCartUI();
-      renderProducts();
     }
 
     function closeSuccessModal() {
-      document.getElementById("orderSuccessModal").classList.add("hidden");
+      document.getElementById("successModal").classList.remove("active");
     }
 
-    // ADMIN PANEL MANAGEMENT
-    function openAdminModal() {
-      document.getElementById("adminModal").classList.remove("hidden");
+    /* ==========================================================================
+       7. ADMIN PANEL FUNCTIONS (EXPANDED)
+       ========================================================================== */
+    function switchAdminTab(tabId) {
+      document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      
+      event.target.classList.add("active");
+      document.getElementById(tabId).classList.add("active");
     }
 
-    function closeAdminModal() {
-      document.getElementById("adminModal").classList.add("hidden");
-    }
-
-    function verifyAdminPin() {
-      const input = document.getElementById("adminPinInput").value;
-      if (input === "1234") {
-        isAdminUnlocked = true;
-        document.getElementById("adminPinScreen").classList.add("hidden");
-        document.getElementById("adminMainContent").classList.remove("hidden");
-        renderAdminItemsList();
-        renderAdminSlidesList();
-      } else {
-        alert("Xato PIN-kod! Qaytadan urinib ko'ring.");
-      }
-    }
-
-    function switchAdminTab(tabName) {
-      ['menu', 'slider', 'qr', 'settings'].forEach(t => {
-        document.getElementById(`adminTab-${t}`).classList.add("hidden");
-        const btn = document.getElementById(`tabBtn-${t}`);
-        btn.className = "flex-1 py-2 text-xs font-bold text-gray-400 border-b-2 border-transparent";
-      });
-
-      document.getElementById(`adminTab-${tabName}`).classList.remove("hidden");
-      const activeBtn = document.getElementById(`tabBtn-${tabName}`);
-      activeBtn.className = "flex-1 py-2 text-xs font-bold text-donixYellow border-b-2 border-donixYellow";
-    }
-
-    // Admin Product Management
-    function renderAdminItemsList() {
-      const container = document.getElementById("adminItemsList");
+    // Admin Products Management
+    function renderAdminProducts() {
+      const container = document.getElementById("admProductsList");
       container.innerHTML = products.map(p => `
-        <div class="bg-gray-900 p-2.5 rounded-xl flex items-center justify-between border border-gray-800">
-          <div class="flex items-center space-x-2">
-            <img src="${p.img}" class="w-8 h-8 rounded-lg object-cover">
-            <div>
-              <p class="text-xs font-extrabold text-white">${p.name}</p>
-              <p class="text-[10px] text-donixYellow font-bold">${formatMoney(p.price)} so'm (${p.category})</p>
-            </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--card-border);">
+          <div>
+            <strong>${p.title}</strong> (${p.category}) - ${formatPrice(p.price)} so'm
           </div>
-          <button onclick="deleteProduct(${p.id})" class="w-7 h-7 rounded-lg bg-red-950 text-red-400 hover:bg-red-600 hover:text-white transition flex items-center justify-center">
-            <i class="fa-solid fa-trash text-xs"></i>
+          <button style="background:var(--danger); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="deleteAdminProduct(${p.id})">
+            O'chirish
           </button>
         </div>
-      `).join("");
+      `).join('');
     }
 
-    function addNewProduct() {
-      const name = document.getElementById("newItemName").value.trim();
-      const category = document.getElementById("newItemCategory").value;
-      const price = parseFloat(document.getElementById("newItemPrice").value);
-      const variantName = document.getElementById("newItemVariantPrice").value.trim();
-      const img = document.getElementById("newItemImage").value.trim() || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
+    function saveAdminProduct() {
+      const title = document.getElementById("admProdTitle").value.trim();
+      const price = Number(document.getElementById("admProdPrice").value);
+      const category = document.getElementById("admProdCategory").value.trim() || "Boshqa";
+      const img = document.getElementById("admProdImg").value.trim() || "https://via.placeholder.com/300x200?text=DONIX";
+      const desc = document.getElementById("admProdDesc").value.trim();
 
-      if (!name || isNaN(price)) {
-        alert("Iltimos, taom nomi va to'g'ri narxni kiriting!");
+      if (!title || !price) {
+        alert("Sarlavha va Narxni kiritish majburiy!");
         return;
       }
 
-      products.unshift({
-        id: Date.now(),
-        name,
-        category,
-        price,
-        variantName: variantName || null,
-        img
-      });
+      const newProd = { id: Date.now(), title, price, category, img, desc };
+      products.push(newProd);
+      localStorage.setItem('donix_products', JSON.stringify(products));
 
-      saveProducts();
+      // Reset Inputs
+      document.getElementById("admProdTitle").value = "";
+      document.getElementById("admProdPrice").value = "";
+      document.getElementById("admProdDesc").value = "";
+
+      renderAdminProducts();
+      renderCategories();
       renderProducts();
-      renderAdminItemsList();
-
-      document.getElementById("newItemName").value = "";
-      document.getElementById("newItemPrice").value = "";
-      document.getElementById("newItemVariantPrice").value = "";
-      document.getElementById("newItemImage").value = "";
-
-      alert("Taom menyuga qo'shildi va saqlandi!");
+      alert("Taom muvaffaqiyatli qo'shildi!");
     }
 
-    function deleteProduct(id) {
-      if (confirm("Ushbu taomni menyudan o'chirasizmi?")) {
-        products = products.filter(p => p.id !== id);
-        saveProducts();
-        renderProducts();
-        renderAdminItemsList();
-      }
+    function deleteAdminProduct(id) {
+      if (!confirm("Ushbu taomni o'chirmoqchimisiz?")) return;
+      products = products.filter(p => p.id !== id);
+      localStorage.setItem('donix_products', JSON.stringify(products));
+      renderAdminProducts();
+      renderCategories();
+      renderProducts();
     }
 
-    // Admin Slider Management
-    function renderAdminSlidesList() {
-      const container = document.getElementById("adminSlidesList");
-      container.innerHTML = slides.map(s => `
-        <div class="bg-gray-900 p-2.5 rounded-xl flex items-center justify-between border border-gray-800">
-          <div class="flex items-center space-x-2">
-            <img src="${s.img}" class="w-10 h-8 rounded-lg object-cover">
-            <div>
-              <p class="text-xs font-bold text-white">${s.title}</p>
-              <p class="text-[10px] text-gray-400">${s.badge}</p>
-            </div>
+    // Admin Banners Management
+    function renderAdminBanners() {
+      const container = document.getElementById("admBannersList");
+      container.innerHTML = banners.map(b => `
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--card-border);">
+          <div>
+            <strong>${b.title}</strong> [${b.badge || 'Badiiy'}]
           </div>
-          <button onclick="deleteSlide(${s.id})" class="w-7 h-7 rounded-lg bg-red-950 text-red-400 hover:bg-red-600 hover:text-white transition flex items-center justify-center">
-            <i class="fa-solid fa-trash text-xs"></i>
+          <button style="background:var(--danger); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="deleteAdminBanner(${b.id})">
+            O'chirish
           </button>
         </div>
-      `).join("");
+      `).join('');
     }
 
-    function addNewSlide() {
-      const badge = document.getElementById("newSlideBadge").value.trim();
-      const title = document.getElementById("newSlideTitle").value.trim();
-      const subtitle = document.getElementById("newSlideSubtitle").value.trim();
-      const img = document.getElementById("newSlideImage").value.trim() || "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80";
+    function saveAdminBanner() {
+      const title = document.getElementById("admBannerTitle").value.trim();
+      const sub = document.getElementById("admBannerSub").value.trim();
+      const badge = document.getElementById("admBannerBadge").value.trim();
+      const img = document.getElementById("admBannerImg").value.trim() || "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800";
 
       if (!title) {
-        alert("Iltimos, slayd sarlavhasini kiriting!");
+        alert("Banner sarlavhasini kiriting!");
         return;
       }
 
-      slides.push({
-        id: Date.now(),
-        badge: badge || "AKSIYA",
-        title,
-        subtitle,
-        img
-      });
+      banners.push({ id: Date.now(), title, sub, badge, img });
+      localStorage.setItem('donix_banners', JSON.stringify(banners));
 
-      saveSlides();
-      renderSlider();
-      renderAdminSlidesList();
+      document.getElementById("admBannerTitle").value = "";
+      document.getElementById("admBannerSub").value = "";
 
-      document.getElementById("newSlideBadge").value = "";
-      document.getElementById("newSlideTitle").value = "";
-      document.getElementById("newSlideSubtitle").value = "";
-      document.getElementById("newSlideImage").value = "";
-
-      alert("Slayd saqlandi!");
+      renderAdminBanners();
+      renderBanners();
+      alert("Banner qo'shildi!");
     }
 
-    function deleteSlide(id) {
-      slides = slides.filter(s => s.id !== id);
-      saveSlides();
-      renderSlider();
-      renderAdminSlidesList();
+    function deleteAdminBanner(id) {
+      banners = banners.filter(b => b.id !== id);
+      localStorage.setItem('donix_banners', JSON.stringify(banners));
+      renderAdminBanners();
+      renderBanners();
     }
 
-    // QR & Link Table Generator
+    // Admin Table QR Generator
     function generateTableQR() {
-      const tableNum = document.getElementById("generateTableNum").value;
-      if (!tableNum) {
-        alert("Iltimos, stol raqamini kiriting!");
+      const num = document.getElementById("qrTableNum").value;
+      if (!num) {
+        alert("Stol raqamini kiriting!");
         return;
       }
 
-      const currentOrigin = window.location.origin + window.location.pathname;
-      const generatedUrl = `${currentOrigin}?table=${tableNum}`;
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(generatedUrl)}`;
+      const baseUrl = window.location.origin + window.location.pathname;
+      const fullUrl = `${baseUrl}?table=${num}`;
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(fullUrl)}`;
 
-      document.getElementById("qrImagePreview").src = qrApiUrl;
-      document.getElementById("qrGeneratedUrl").value = generatedUrl;
-      document.getElementById("qrTableLabel").innerText = `STOL № ${tableNum}`;
-      document.getElementById("downloadQrBtn").href = qrApiUrl;
-      document.getElementById("qrResultBox").classList.remove("hidden");
+      document.getElementById("qrGeneratedUrl").innerText = fullUrl;
+      document.getElementById("qrImageElem").src = qrApi;
+      document.getElementById("qrResultArea").style.display = "block";
     }
 
-    function copyGeneratedUrl() {
-      const copyText = document.getElementById("qrGeneratedUrl");
-      copyText.select();
-      document.execCommand("copy");
+    function copyTableUrl() {
+      const url = document.getElementById("qrGeneratedUrl").innerText;
+      navigator.clipboard.writeText(url);
       alert("Havola nusxalandi!");
     }
 
-    // Local Storage Helpers
-    function saveProducts() {
-      localStorage.setItem("donix_products", JSON.stringify(products));
-    }
-
-    function saveSlides() {
-      localStorage.setItem("donix_slides", JSON.stringify(slides));
-    }
-
-    function exportDatabase() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ products, slides }));
+    // JSON Export Data
+    function exportJSONData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ products, banners }));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "donix_database_backup.json");
+      downloadAnchor.setAttribute("download", "donix_data.json");
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
     }
 
-    function resetToDefaults() {
-      if (confirm("Barcha ma'lumotlarni dastlabki holatga qaytarasizmi?")) {
-        localStorage.removeItem("donix_products");
-        localStorage.removeItem("donix_slides");
-        products = defaultProducts;
-        slides = defaultSlides;
-        renderProducts();
-        renderSlider();
-        renderAdminItemsList();
-        renderAdminSlidesList();
-        alert("Qayta tiklandi!");
-      }
-    }
-
-    function resetView() {
-      selectedCategory = "ALL";
-      document.getElementById("searchInput").value = "";
-      renderCategories();
-      renderProducts();
-    }
-
-    function formatMoney(num) {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
+    /* Initialize App */
+    document.addEventListener("DOMContentLoaded", initApp);
   </script>
 </body>
 </html>
